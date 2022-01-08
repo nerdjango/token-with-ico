@@ -1,0 +1,25 @@
+{
+  "name": "token-with-ico",
+  "version": "1.0.0",
+  "description": "A bep20 token with presale smart contract",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nerdjango/token-with-ico.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nerdjango/token-with-ico/issues"
+  },
+  "homepage": "https://github.com/nerdjango/token-with-ico#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.4.1"
+  }
+}
