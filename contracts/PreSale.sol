@@ -44,7 +44,7 @@ contract Presale is Pausable, Ownable {
     address TokenAddress;
 
     // address where funds are collected
-    address payable wallet;
+    address public wallet;
 
     // amount of raised money in wei
     uint256 public weiRaised;
@@ -106,7 +106,7 @@ contract Presale is Pausable, Ownable {
 
     // send ether to the fund collection wallet
     function forwardFunds() internal {
-        wallet.transfer(msg.value);
+        payable(wallet).transfer(msg.value);
     }
 
     //allow owner to finalize the presale once the presale is ended
