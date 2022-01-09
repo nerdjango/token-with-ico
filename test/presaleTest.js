@@ -52,5 +52,12 @@ contract("PreSale", accounts => {
         account2Balance = await token.balanceOf(accounts[2]);
 
         assert.equal(Web3.utils.fromWei(account2Balance.toString(), "ether"), 9900000)
+
+        let hasEnded = await presale.hasEnded()
+        assert.equal(hasEnded, true)
+
+        await truffleAssert.reverts(presale.finalize({ from: accounts[1] }))
+        await truffleAssert.passes(presale.finalize({ from: accounts[0] }))
+        await truffleAssert.reverts(presale.finalize({ from: accounts[0] }))
     })
 })
