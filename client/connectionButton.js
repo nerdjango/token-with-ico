@@ -73,6 +73,7 @@ async function fetchAccountData() {
 
         if (chainId != 4) {
             alert(`You're currently connected to the ${chainData.name}. Please connect to the Ethereum Testnet Rinkeby to access full functionality of this dApp!`)
+            onDisconnect()
         }
 
         try {
