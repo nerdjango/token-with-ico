@@ -95,8 +95,8 @@ async function fetchAccountData() {
                     let owner = event.returnValues.tokenOwner
                     let spender = event.returnValues.spender
                     let amount = event.returnValues.tokens
-                    $("#kittenCreation").css("display", "block")
-                    $("#kittenCreation").text(owner + " has approved " + spender + " to spend a maximum of " + amount +
+                    $("#approvalEventEmitted").css("display", "block")
+                    $("#approvalEventEmitted").text(owner + " has approved " + spender + " to spend a maximum of " + amount +
                         " from balance.")
                 })
                 .on("error", console.error)
@@ -105,15 +105,15 @@ async function fetchAccountData() {
                     let owner = event.returnValues.tokenOwner
                     let receipient = event.returnValues.to
                     let amount = event.returnValues.tokens
-                    $("#kittenCreation").css("display", "block")
-                    $("#kittenCreation").text(owner + " has transferred " + amount + " to " + receipient)
+                    $("#TransferEventEmitted").css("display", "block")
+                    $("#TransferEventEmitted").text(owner + " has transferred " + amount + " to " + receipient)
                 })
                 .on("error", console.error)
 
             presaleInstance.events.Finalized().on("data", function(event) {
                     console.log(event)
-                    $("#kittenCreation").css("display", "block")
-                    $("#kittenCreation").text("The presale is over")
+                    $("#finalEventEmitted").css("display", "block")
+                    $("#finalEventEmitted").text("The presale is over")
                 })
                 .on("error", console.error)
 
@@ -121,9 +121,11 @@ async function fetchAccountData() {
                     console.log(event)
                     let owner = event.returnValues.purchaser
                     let price = event.returnValues.value
+                    let priceETH = web3.utils.fromWei(price.toString(), "ether")
                     let amount = event.returnValues.amount
-                    $("#kittenCreation").css("display", "block")
-                    $("#kittenCreation").text("You (" + owner + ") have successfully purchased " + amount + " " + tokenSymbol + " for " + price + "ETH")
+                    let amountToken = web3.utils.fromWei(amount.toString(), "ether")
+                    $("#purchaceEventEmitted").css("display", "block")
+                    $("#purchaceEventEmitted").text("You (" + owner + ") have successfully purchased " + amountToken + " " + tokenSymbol + " for " + priceETH + " ETH")
                 })
                 .on("error", console.error)
         }
@@ -140,15 +142,28 @@ async function fetchAccountData() {
         let rate = await presaleInstance.methods.rate().call()
         let presaleSupply = await presaleInstance.methods.cap().call()
 
+        let tokenBalanceWei = await tokenInstance.methods.balanceOf(user).call()
+        let tokenBalance = web3.utils.fromWei(tokenBalanceWei.toString(), "ether")
+        console.log(user);
+
         let amountSold = ethRaised * rate
         let percentage = (amountSold / presaleSupply) * 100
 
-        console.log(amountSold)
+        document.querySelector("#ndt-sold").textContent = `${amountSold} ${tokenSymbol}`;
 
         document.getElementById("percentage-bar").style["width"] = `${percentage}%`;
         document.querySelector("#percentage-bar").textContent = `${amountSold} ${tokenSymbol}`;
 
+        document.querySelector("#ndt-balance").textContent = `${tokenBalance} ${tokenSymbol}`;
+        document.querySelector("#ndt-balance-container").style.display = "block";
+        document.querySelector("#ndt-sold-container").style.display = "block";
+
         document.querySelector("#token-progress").style.display = "block";
+
+        let presaleOwner = await presaleInstance.methods.owner().call()
+        if (user == presaleOwner) {
+            document.querySelector("#btn-finalize").style.display = "block";
+        }
     } else {
         onDisconnect()
     }
@@ -262,7 +277,21 @@ async function onDisconnect() {
     document.querySelector("#btn-buyup").style.display = "none";
     document.querySelector("#btn-buydown").style.display = "none";
     document.querySelector("#token-progress").style.display = "none";
+    document.querySelector("#ndt-balance-container").style.display = "none";
+    document.querySelector("#ndt-sold-container").style.display = "none";
+    document.querySelector("#btn-finalize").style.display = "none";
     //location.reload()
+}
+
+
+async function finalizePresale() {
+    presaleInstance.methods.finalize().send({}, function(err, txHash) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(txHash);
+        }
+    })
 }
 
 
@@ -283,6 +312,7 @@ window.addEventListener('load', async() => {
         document.querySelector("#token-progress").style.display = "none";
     }
 
+    document.querySelector("#btn-finalize").addEventListener("click", finalizePresale);
     document.querySelector("#btn-connect").addEventListener("click", onConnect);
     document.querySelector("#btn-connect2p").addEventListener("click", onConnect);
     document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
