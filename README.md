@@ -24,6 +24,4 @@ Testing: mocha, chai, truffle-assertions
 
 3. Visit the website link above.
 
-4. Make sure your wallet is on the Rinkeby test network. Press the "Connect" button. This will connect the wallet to the app so it can query the blockchain for your kitties.
-
-5. Head over to the URL to interact with the dApp by buying the NDT Token with the test eth! them and have.
+4. Make sure your wallet is on the Rinkeby test network. Press the "Connect" button. This will connect the wallet to the app to interact  by buying the NDT Token with the test eth! them and have.
